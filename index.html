@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Sign Up Toggle</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"> <!-- Optional: For icons -->
+    <title>Enhanced Login & Sign Up</title>
+    <!-- Using a more recent version of Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
@@ -13,8 +14,14 @@
             --secondary-color: #d54f9d;
             --white-color: #ffffff;
             --light-gray-color: #f4f4f4;
+            --medium-gray-color: #e0e0e0; /* For borders */
             --dark-gray-color: #555;
+            --text-color: #333;
             --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --gradient-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-overlay: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            --mobile-breakpoint: 768px; /* Define breakpoint */
         }
 
         * {
@@ -23,172 +30,195 @@
             padding: 0;
         }
 
+        html {
+             scroll-behavior: smooth; /* Optional: smooth scrolling */
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--gradient-bg);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* Prevents scrollbars during animation */
+            padding: 20px; /* Padding for spacing on smaller screens */
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
         .container {
             background-color: var(--white-color);
-            border-radius: 10px;
-            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25),
-                        0 10px 10px rgba(0, 0, 0, 0.22);
+            border-radius: 12px;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2),
+                        0 10px 10px rgba(0, 0, 0, 0.18);
             position: relative;
-            overflow: hidden; /* Important for the sliding effect */
-            width: 768px;
-            max-width: 100%;
-            min-height: 480px;
+            overflow: hidden;
+            width: 100%; /* Full width by default */
+            max-width: 768px; /* Max width on desktop */
+            min-height: 520px; /* Adjusted min-height */
+            /* display: flex; Removed flex here for mobile-first stacking */
+            /* flex-direction: column; */
         }
 
+        /* --- Form Containers --- */
         .form-container {
-            position: absolute;
+            position: absolute; /* Needed for desktop overlay */
             top: 0;
             height: 100%;
             transition: all 0.6s ease-in-out;
+            width: 100%; /* Default full width */
+            display: flex; /* Center content */
+            align-items: center;
+            justify-content: center;
+            /* Mobile specific styles are handled in media query */
         }
 
         .sign-up-container {
             left: 0;
-            width: 50%;
+            width: 50%; /* Desktop: Half width */
             opacity: 0;
             z-index: 1;
         }
 
         .login-container {
             left: 0;
-            width: 50%;
+            width: 50%; /* Desktop: Half width */
             z-index: 2; /* Initially visible */
-        }
-
-        /* Move sign-up over login when active */
-        .container.right-panel-active .sign-up-container {
-            transform: translateX(100%);
             opacity: 1;
-            z-index: 5;
-            animation: show 0.6s;
         }
 
-        /* Move login away when sign-up is active */
-        .container.right-panel-active .login-container {
-            transform: translateX(100%);
-            opacity: 0; /* Fade out login form */
-        }
-
-
-        @keyframes show {
-            0%, 49.99% {
-                opacity: 0;
-                z-index: 1;
-            }
-            50%, 100% {
-                opacity: 1;
-                z-index: 5;
-            }
-        }
-
+        /* --- Form Styling --- */
         form {
             background-color: var(--white-color);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            padding: 0 50px;
+            padding: 0 40px; /* Horizontal padding */
             height: 100%;
+            width: 100%;
             text-align: center;
         }
 
         h1 {
-            font-weight: bold;
-            margin: 0;
-            margin-bottom: 15px;
-            color: var(--dark-gray-color);
+            font-weight: 700;
+            margin: 0 0 20px 0; /* Bottom margin */
+            color: var(--text-color);
+            font-size: 2em;
         }
 
         .social-container {
-            margin: 20px 0;
+            margin: 15px 0 20px;
         }
 
         .social-container a {
-            border: 1px solid #ddd;
+            border: 1px solid var(--medium-gray-color);
             border-radius: 50%;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            margin: 0 5px;
-            height: 40px;
-            width: 40px;
+            margin: 0 8px;
+            height: 45px;
+            width: 45px;
             color: var(--dark-gray-color);
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .social-container a:hover {
             background-color: var(--light-gray-color);
+            transform: scale(1.1);
         }
 
-        span {
-            font-size: 12px;
+        span.form-text { /* Use this class for the "or use email..." text */
+            font-size: 13px;
             color: var(--dark-gray-color);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: block; /* Ensure it takes block space */
         }
 
         .input-group {
             background-color: var(--light-gray-color);
-            border-radius: 5px;
+            border: 1px solid var(--light-gray-color); /* Subtle border */
+            border-radius: 8px;
             width: 100%;
-            margin: 8px 0;
+            margin: 10px 0;
             display: flex;
             align-items: center;
-            padding: 0 15px; /* Add padding for icon spacing */
+            padding: 0 15px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative; /* Needed for password toggle */
         }
 
-        .input-group i {
-            color: var(--dark-gray-color); /* Icon color */
-            margin-right: 10px;
+        .input-group:focus-within {
+             border-color: var(--primary-color);
+             box-shadow: 0 0 0 2px rgba(106, 90, 249, 0.2);
+        }
+
+        .input-group i.fa-icon { /* Class for leading icons */
+            color: var(--dark-gray-color);
+            margin-right: 12px;
+            width: 16px; /* Fixed width */
+            text-align: center;
+            flex-shrink: 0; /* Prevent icon shrinking */
         }
 
         input {
-            background: none; /* Make input background transparent */
+            background: none;
             border: none;
-            padding: 12px 0; /* Adjust padding */
-            width: 100%; /* Take remaining width */
+            padding: 14px 0; /* Increased padding */
+            width: 100%;
             outline: none;
             font-family: 'Poppins', sans-serif;
             font-size: 14px;
+            color: var(--text-color);
         }
 
         input::placeholder {
             color: #aaa;
         }
 
+        /* Password visibility toggle */
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--dark-gray-color);
+            font-size: 1.1em;
+        }
+        .password-toggle:hover {
+            color: var(--primary-color);
+        }
+
+
         a.forgot-password {
             color: var(--dark-gray-color);
             font-size: 12px;
             text-decoration: none;
-            margin: 15px 0;
+            margin: 15px 0 20px; /* Adjusted margin */
             transition: color 0.3s ease;
+            display: block; /* Ensure it takes block space */
         }
         a.forgot-password:hover {
             color: var(--primary-color);
         }
 
         button {
-            border-radius: 20px;
+            border-radius: 25px; /* More rounded */
             border: 1px solid var(--primary-color);
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background: var(--gradient-bg); /* Use gradient */
             color: var(--white-color);
-            font-size: 12px;
+            font-size: 13px; /* Slightly larger */
             font-weight: bold;
             padding: 12px 45px;
             letter-spacing: 1px;
             text-transform: uppercase;
-            transition: transform 80ms ease-in, background 0.3s ease;
+            transition: transform 80ms ease-in, background 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px; /* Increased top margin */
+        }
+        button:hover {
+             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         button:active {
@@ -197,18 +227,20 @@
 
         button:focus {
             outline: none;
+             box-shadow: 0 0 0 3px rgba(106, 90, 249, 0.3); /* Focus ring */
         }
 
         button.ghost {
             background-color: transparent;
             border-color: var(--white-color);
-            background: none; /* Remove gradient */
+            background: none; /* Override gradient */
         }
         button.ghost:hover {
              background: rgba(255, 255, 255, 0.1);
+             box-shadow: none; /* Remove hover shadow for ghost */
         }
 
-        /* --- Overlay --- */
+        /* --- Overlay (Desktop Only) --- */
         .overlay-container {
             position: absolute;
             top: 0;
@@ -220,12 +252,8 @@
             z-index: 100; /* Above forms */
         }
 
-        .container.right-panel-active .overlay-container {
-            transform: translateX(-100%);
-        }
-
         .overlay {
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color)); /* Reversed gradient */
+            background: var(--gradient-overlay); /* Reversed gradient */
             color: var(--white-color);
             position: relative;
             left: -100%; /* Hide it initially */
@@ -233,10 +261,6 @@
             width: 200%; /* Double width to cover slide */
             transform: translateX(0);
             transition: transform 0.6s ease-in-out;
-        }
-
-        .container.right-panel-active .overlay {
-            transform: translateX(50%);
         }
 
         .overlay-panel {
@@ -254,8 +278,10 @@
             transition: transform 0.6s ease-in-out;
         }
 
-        .overlay-panel h1 {
+         .overlay-panel h1 {
            color: var(--white-color);
+           font-weight: 700;
+           margin-bottom: 15px;
         }
         .overlay-panel p {
            font-size: 14px;
@@ -265,11 +291,39 @@
            margin: 20px 0 30px;
         }
 
+        /* --- Desktop Sliding Animations --- */
+
+        /* Move sign-up over login when active */
+        .container.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        /* Move login away when sign-up is active */
+        .container.right-panel-active .login-container {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1; /* Ensure it goes behind */
+        }
+
+        /* Slide the overlay container */
+        .container.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        /* Slide the overlay background */
+        .container.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        /* Animate overlay panels */
         .overlay-left {
-            transform: translateX(-20%); /* Push slightly out of view */
+            transform: translateX(-20%); /* Start slightly off */
         }
         .container.right-panel-active .overlay-left {
-            transform: translateX(0); /* Bring into view */
+            transform: translateX(0);
         }
 
         .overlay-right {
@@ -277,41 +331,110 @@
             transform: translateX(0);
         }
         .container.right-panel-active .overlay-right {
-            transform: translateX(20%); /* Push out of view */
+            transform: translateX(20%); /* Move slightly off */
         }
 
+        @keyframes show {
+            0%, 49.99% {
+                opacity: 0;
+                z-index: 1;
+            }
+            50%, 100% {
+                opacity: 1;
+                z-index: 5;
+            }
+        }
 
-        /* Responsive adjustments (Optional but recommended) */
-        @media (max-width: 768px) {
-             .container {
-                 width: 95%;
-                 min-height: 550px; /* Adjust height for smaller screens */
-             }
-             form {
-                 padding: 0 20px;
-             }
+        /* --- Mobile Responsiveness --- */
+        /* Add a link/button within forms for mobile toggling */
+        .mobile-toggle-link {
+            display: none; /* Hidden on desktop */
+            margin-top: 25px;
+            font-size: 13px;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        /* Below the breakpoint (Mobile Styles) */
+        @media (max-width: 767.98px) { /* Use 767.98px to avoid overlap with 768px */
+            body {
+                align-items: flex-start; /* Align container to top */
+                padding-top: 30px;
+            }
+
+            .container {
+                 max-width: 400px; /* Limit width on mobile */
+                 min-height: 0; /* Remove fixed min-height */
+                 height: auto; /* Allow height to adjust */
+                 box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Softer shadow for mobile */
+                 overflow: visible; /* Allow content overflow if needed */
+                 border-radius: 10px;
+            }
+
+            /* Hide the overlay elements */
+            .overlay-container {
+                display: none;
+            }
+
+            /* Stack forms */
+            .form-container {
+                position: relative; /* Back to static positioning */
+                width: 100%; /* Full width */
+                height: auto; /* Auto height */
+                min-height: 0;
+                padding: 30px 25px; /* Adjust padding */
+                opacity: 1 !important; /* Ensure visible */
+                transform: none !important; /* Remove transforms */
+                z-index: 1 !important; /* Reset z-index */
+                 transition: none; /* Disable transitions for simplicity or use opacity fade */
+            }
+
+            .sign-up-container {
+                display: none; /* Hide sign-up by default */
+                /* We'll toggle display with JS */
+            }
+
+            /* Show the toggle links */
+            .mobile-toggle-link {
+                 display: block;
+            }
+
              h1 {
-                 font-size: 1.8em; /* Slightly smaller headings */
+                font-size: 1.8em; /* Slightly smaller heading for mobile */
+                margin-bottom: 15px;
+            }
+
+            form {
+                padding: 0; /* Remove horizontal padding, handled by form-container */
+            }
+
+            button {
+                padding: 12px 35px;
+            }
+
+             .social-container a {
+                height: 40px;
+                width: 40px;
+                margin: 0 5px;
+            }
+
+            /* JS will toggle these classes on mobile */
+            .container.mobile-show-signup .login-container {
+                display: none;
+            }
+             .container.mobile-show-signup .sign-up-container {
+                display: flex; /* Use flex to keep centering */
+            }
+             /* Default state (show login) */
+             .container:not(.mobile-show-signup) .login-container {
+                 display: flex;
+             }
+             .container:not(.mobile-show-signup) .sign-up-container {
+                 display: none;
              }
         }
-         @media (max-width: 480px) {
-              .container {
-                  min-height: 600px; /* Even more height if needed */
-              }
-              form {
-                  padding: 0 15px;
-              }
-              h1 {
-                  font-size: 1.5em;
-              }
-              button {
-                  padding: 10px 30px;
-              }
-              .overlay-panel p {
-                  margin: 15px 0 20px;
-              }
-         }
-
 
     </style>
 </head>
@@ -320,54 +443,60 @@
     <div class="container" id="container">
         <!-- Sign Up Form -->
         <div class="form-container sign-up-container">
-            <form action="#"> <!-- Add your backend endpoint here -->
+            <form action="#" id="signUpForm">
                 <h1>Create Account</h1>
                 <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social" aria-label="Sign up with Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social" aria-label="Sign up with Google"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social" aria-label="Sign up with Linkedin"><i class="fab fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your email for registration</span>
+                <span class="form-text">or use your email for registration</span>
                 <div class="input-group">
-                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Name" required />
+                     <i class="fas fa-user fa-icon"></i>
+                    <input type="text" placeholder="Name" aria-label="Name" required />
                 </div>
                 <div class="input-group">
-                     <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" required />
+                     <i class="fas fa-envelope fa-icon"></i>
+                    <input type="email" placeholder="Email" aria-label="Email" required />
                 </div>
                  <div class="input-group">
-                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Password" required />
+                     <i class="fas fa-lock fa-icon"></i>
+                    <input type="password" placeholder="Password" class="password-input" aria-label="Password" required />
+                    <i class="fas fa-eye password-toggle" aria-label="Show password"></i>
                 </div>
                 <button type="submit">Sign Up</button>
+                <!-- Mobile Toggle -->
+                <span class="mobile-toggle-link" id="mobileSignInLink">Already have an account? Login</span>
             </form>
         </div>
 
         <!-- Login Form -->
         <div class="form-container login-container">
-            <form action="#"> <!-- Add your backend endpoint here -->
+            <form action="#" id="loginForm">
                 <h1>Login</h1>
                 <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social" aria-label="Login with Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social" aria-label="Login with Google"><i class="fab fa-google-plus-g"></i></a>
+                    <a href="#" class="social" aria-label="Login with Linkedin"><i class="fab fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your account</span>
+                <span class="form-text">or use your account</span>
                  <div class="input-group">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="Email" required />
+                    <i class="fas fa-envelope fa-icon"></i>
+                    <input type="email" placeholder="Email" aria-label="Email" required />
                  </div>
                  <div class="input-group">
-                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Password" required />
+                     <i class="fas fa-lock fa-icon"></i>
+                    <input type="password" placeholder="Password" class="password-input" aria-label="Password" required />
+                     <i class="fas fa-eye password-toggle" aria-label="Show password"></i>
                 </div>
                 <a href="#" class="forgot-password">Forgot your password?</a>
                 <button type="submit">Login</button>
+                <!-- Mobile Toggle -->
+                 <span class="mobile-toggle-link" id="mobileSignUpLink">Don't have an account? Sign Up</span>
             </form>
         </div>
 
-        <!-- Overlay -->
+        <!-- Overlay (Desktop Only) -->
         <div class="overlay-container">
             <div class="overlay">
                 <!-- Left Overlay Panel (Shown when Login is visible) -->
@@ -387,27 +516,79 @@
     </div>
 
     <script>
+        const container = document.getElementById('container');
+        // Desktop toggle buttons
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
-        const container = document.getElementById('container');
+        // Mobile toggle links
+        const mobileSignUpLink = document.getElementById('mobileSignUpLink');
+        const mobileSignInLink = document.getElementById('mobileSignInLink');
+        // Password toggles
+        const passwordToggles = document.querySelectorAll('.password-toggle');
+        // Forms
+        const loginForm = document.getElementById('loginForm');
+        const signUpForm = document.getElementById('signUpForm');
 
-        signUpButton.addEventListener('click', () => {
-            container.classList.add('right-panel-active');
-        });
+        // --- Desktop Toggle ---
+        if (signUpButton && signInButton) { // Check if overlay buttons exist
+            signUpButton.addEventListener('click', () => {
+                container.classList.add('right-panel-active');
+            });
 
-        signInButton.addEventListener('click', () => {
-            container.classList.remove('right-panel-active');
-        });
+            signInButton.addEventListener('click', () => {
+                container.classList.remove('right-panel-active');
+            });
+        }
 
-        // Optional: Prevent default form submission for this demo
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                // Add actual form submission logic here (e.g., using fetch)
-                alert('Form submitted (demo only)!');
+        // --- Mobile Toggle ---
+         if (mobileSignUpLink && mobileSignInLink) { // Check if mobile links exist
+             mobileSignUpLink.addEventListener('click', (e) => {
+                 e.preventDefault(); // Prevent potential navigation
+                 container.classList.add('mobile-show-signup');
+             });
+
+             mobileSignInLink.addEventListener('click', (e) => {
+                  e.preventDefault(); // Prevent potential navigation
+                 container.classList.remove('mobile-show-signup');
+             });
+        }
+
+        // --- Password Visibility Toggle ---
+        passwordToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                const passwordInput = toggle.previousElementSibling; // Get the input right before the icon
+                const icon = toggle;
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    icon.setAttribute('aria-label', 'Hide password');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                     icon.setAttribute('aria-label', 'Show password');
+                }
             });
         });
+
+        // --- Form Submission Handling (Demo) ---
+        const handleFormSubmit = (e) => {
+            e.preventDefault(); // Prevent actual submission for demo
+            // Add validation logic here if needed
+            alert(`Form submitted (demo)! Target: #${e.target.id}`);
+            // Example: You could use Fetch API here to send data to your backend
+            // fetch('/your-backend-endpoint', {
+            //     method: 'POST',
+            //     body: new FormData(e.target)
+            // })
+            // .then(response => response.json())
+            // .then(data => console.log(data))
+            // .catch(error => console.error('Error:', error));
+        };
+
+        if (loginForm) loginForm.addEventListener('submit', handleFormSubmit);
+        if (signUpForm) signUpForm.addEventListener('submit', handleFormSubmit);
 
     </script>
 
